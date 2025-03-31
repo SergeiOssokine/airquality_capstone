@@ -5,6 +5,7 @@ from typing import List
 from prefect_gcp import GcpCredentials
 from rich.logging import RichHandler
 from rich.traceback import install
+from prefect.logging import get_run_logger
 
 # Sets up the logger to work with rich
 logger = logging.getLogger(__name__)
@@ -36,3 +37,24 @@ def upload_many_files(bucket_name: str, dataset_prefix: str, filenames: List[str
             fname,
         )
         logger.info("Done")
+
+
+def create_table_in_dwh(
+    project_id: str = None, dwh: str = None, files_path: str = None, name: str = None
+):
+    logger = get_run_logger()
+
+    logger.info(f"Creating raw {name} table")
+    # Construct a BigQuery client object.
+    client = GcpCredentials.load("airquality-gcp-credentials").get_bigquery_client(
+        location="EU"
+    )
+    query = f"""
+LOAD DATA OVERWRITE `{project_id}.{dwh}.{name}`
+FROM FILES (
+  format = 'PARQUET',
+  uris = ['{files_path}/*.parquet']
+);
+"""
+    logger.info(query)
+    client.query_and_wait(query)

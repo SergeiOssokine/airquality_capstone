@@ -1,15 +1,44 @@
+import logging
 import os
+from typing import Any, Dict, List
 
 import pandas as pd
 import requests
-from prefect.logging import get_run_logger
 from prefect.blocks.system import Secret
-from typing import Any, Dict, List
+from prefect.exceptions import MissingContextError
+from prefect.logging import get_logger, get_run_logger
+
+possible_names = [
+    "pm10",
+    "pm25",
+    "o3",
+    "co",
+    "no2",
+    "so2",
+    "no2",
+    "co",
+    "so2",
+    "o3",
+    "bc",
+    "no2",
+    "pm1",
+    "co2",
+]
+
+
+def fetch_logger():
+    try:
+        logger = get_run_logger()
+    except MissingContextError:
+        logging.basicConfig()
+        logger = get_logger()
+        logger.setLevel("INFO")
+    return logger
 
 
 def get_all_locations(api_key_name: str = "openaq-api-key") -> List[Dict[str, Any]]:
     secret_block = Secret.load(api_key_name)
-    logger = get_run_logger()
+    logger = fetch_logger()
     url = "https://api.openaq.org/v3/locations"
     params = {
         "limit": 1000,
@@ -40,6 +69,8 @@ def get_all_locations(api_key_name: str = "openaq-api-key") -> List[Dict[str, An
                     params["page"] = page + 1
             else:
                 has_more = False
+            has_more = False
+
         else:
             logger.critical(f"Error: {response.status_code}")
             break
@@ -57,19 +88,30 @@ def extract_location_info(locations):
         tmp_info = loc.get("country")
         for key, item in tmp_info.items():
             country_info[f"country_{key}"] = item
+        tmp_info = loc.get("sensors")
+        sensor_ids = dict(zip(possible_names, [None] * (len(possible_names))))
+        for sensor in tmp_info:
+            parameter_name = sensor.get("parameter").get("name")
+            if parameter_name in possible_names:
+                sensor_ids[parameter_name] = sensor.get("id")
         info = {
             "location_id": loc.get("id"),
             "name": loc.get("name"),
             "latitude": loc.get("coordinates", {}).get("latitude"),
             "longitude": loc.get("coordinates", {}).get("longitude"),
         }
+
         info.update(**country_info)
+        info.update(**sensor_ids)
         location_info.append(info)
-    return pd.DataFrame(location_info)
+    df = pd.DataFrame(location_info)
+    for k in possible_names:
+        df[k] = df[k].astype("Int64")
+    return df
 
 
 def get_sensor_location_info(staging_area: str = "/tmp/airquality_staging_area"):
-    logger = get_run_logger()
+    logger = fetch_logger()
     # Get all locations and extract coordinates and country information
     logger.info("Downloading all raw location data")
     locations = get_all_locations()
@@ -79,5 +121,10 @@ def get_sensor_location_info(staging_area: str = "/tmp/airquality_staging_area")
     logger.info("Done extracting data")
     output_name = os.path.join(staging_area, "sensor_overview.parquet")
     logger.info(f"Saving the data to {output_name}")
+    print(location_info.head(5))
     location_info.to_parquet(output_name)
     return [output_name]
+
+
+if __name__ == "__main__":
+    get_sensor_location_info("./")
