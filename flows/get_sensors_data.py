@@ -2,11 +2,13 @@ import logging
 import os
 from typing import Any, Dict, List
 
+import geopandas as gpd
 import pandas as pd
 import requests
 from prefect.blocks.system import Secret
 from prefect.exceptions import MissingContextError
 from prefect.logging import get_logger, get_run_logger
+from shapely import Point
 
 possible_names = [
     "pm10",
@@ -69,7 +71,6 @@ def get_all_locations(api_key_name: str = "openaq-api-key") -> List[Dict[str, An
                     params["page"] = page + 1
             else:
                 has_more = False
-            has_more = False
 
         else:
             logger.critical(f"Error: {response.status_code}")
@@ -110,6 +111,16 @@ def extract_location_info(locations):
     return df
 
 
+def row_to_point(row):
+    return Point(row[0], row[1])
+
+
+def add_geometry_info(df: pd.DataFrame) -> gpd.GeoDataFrame:
+    return gpd.GeoDataFrame(
+        df, geometry=df[["longitude", "latitude"]].apply(row_to_point, axis=1)
+    )
+
+
 def get_sensor_location_info(staging_area: str = "/tmp/airquality_staging_area"):
     logger = fetch_logger()
     # Get all locations and extract coordinates and country information
@@ -118,6 +129,7 @@ def get_sensor_location_info(staging_area: str = "/tmp/airquality_staging_area")
     logger.info("Done downloading the raw data")
     logger.info("Extracting useful data")
     location_info = extract_location_info(locations)
+    location_info = add_geometry_info(location_info)
     logger.info("Done extracting data")
     output_name = os.path.join(staging_area, "sensor_overview.parquet")
     logger.info(f"Saving the data to {output_name}")

@@ -55,7 +55,7 @@ def get_list_of_files(url: str) -> List[str]:
         for line in lines:
             if ".zip" in line:
                 res.append(line.split())
-        res = res[:5]
+        # res = res[:5]
         df = pd.DataFrame(res, columns=["file_name", "date", "timestamp", "size"])
         df["size"] = df["size"].astype("int")
     else:

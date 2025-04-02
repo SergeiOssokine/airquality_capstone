@@ -1,0 +1,23 @@
+airquality:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account-json
+      project: dezoomcampslon
+      dataset: airquality_capstone_dwh
+      location: EU
+      threads: 4 # Must be a value of 1 or greater
+      keyfile_json:
+        type: "{{prefect.blocks.gcp-credentials.newcreds.service_account_info.type}}"
+        project_id: "{{prefect.blocks.gcp-credentials.newcreds.service_account_info.project_id}}"
+        private_key_id: "{{prefect.blocks.gcp-credentials.newcreds.service_account_info.private_key_id}}"
+        private_key: "{{prefect.blocks.gcp-credentials.newcreds.service_account_info.private_key}}"
+        client_email: "{{prefect.blocks.gcp-credentials.newcreds.service_account_info.client_email}}"
+        client_id: "{{prefect.blocks.gcp-credentials.newcreds.service_account_info.client_id}}"
+        auth_uri: "{{prefect.blocks.gcp-credentials.newcreds.service_account_info.auth_uri}}"
+        token_uri: "{{prefect.blocks.gcp-credentials.newcreds.service_account_info.token_uri}}"
+        auth_provider_x509_cert_url: "{{prefect.blocks.gcp-credentials.newcreds.service_account_info.auth_provider_x509_cert_url}}"
+        client_x509_cert_url: "{{prefect.blocks.gcp-credentials.newcreds.service_account_info.client_x509_cert_url}}"
+        universe_domain: "googleapis.com"
+
