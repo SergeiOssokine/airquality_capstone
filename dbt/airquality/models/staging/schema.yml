@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: staging
+    database: dezoomcampslon
+    schema:
+      airquality_capstone_dwh
+    tables:
+      - name:
+          places
+      - name:
+          sensors
