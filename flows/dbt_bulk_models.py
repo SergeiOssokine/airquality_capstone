@@ -10,7 +10,7 @@ def build_sensors_per_location(flag):
     PrefectDbtRunner(
         settings=PrefectDbtSettings(
             project_dir=os.path.join(pth, "../dbt/airquality"),
-            profiles_dir=os.path.join("../dbt/airquality"),
+            profiles_dir=os.path.join(pth, "../dbt/airquality"),
         )
     ).invoke(["build"])
 
