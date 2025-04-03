@@ -76,6 +76,7 @@ def get_sensors_per_location(
         )
 
     logger.info("Done")
+    return True
 
 
 if __name__ == "__main__":

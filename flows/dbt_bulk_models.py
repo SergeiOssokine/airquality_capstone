@@ -3,7 +3,7 @@ from prefect_dbt import PrefectDbtRunner, PrefectDbtSettings
 
 
 @flow
-def run_dbt():
+def build_sensors_per_location(flag):
     PrefectDbtRunner(
         settings=PrefectDbtSettings(
             project_dir="../dbt/airquality",
@@ -13,4 +13,4 @@ def run_dbt():
 
 
 if __name__ == "__main__":
-    run_dbt()
+    build_sensors_per_location(True)

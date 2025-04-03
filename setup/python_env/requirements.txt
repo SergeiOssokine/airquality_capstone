@@ -2,6 +2,7 @@ beautifulsoup4
 db-dtypes
 dlt[bigquery]
 dlt[duckdb]
+geopandas
 google-cloud-storage
 googleapis-common-protos
 grpcio
@@ -10,11 +11,11 @@ ipykernel
 numpy
 pandas
 pre-commit
+prefect
+prefect-gcp[all_extras]
 psycopg2-binary
 py4j
 pyarrow
-prefect
-prefect-gcp[all_extras]
 requests
 sqlalchemy
 sqlalchemy-utils
