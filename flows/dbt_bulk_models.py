@@ -1,13 +1,16 @@
 from prefect import flow
 from prefect_dbt import PrefectDbtRunner, PrefectDbtSettings
+import os
+
+pth = os.path.dirname(__file__)
 
 
 @flow
 def build_sensors_per_location(flag):
     PrefectDbtRunner(
         settings=PrefectDbtSettings(
-            project_dir="../dbt/airquality",
-            profiles_dir="../dbt/airquality",
+            project_dir=os.path.join(pth, "../dbt/airquality"),
+            profiles_dir=os.path.join("../dbt/airquality"),
         )
     ).invoke(["build"])
 
