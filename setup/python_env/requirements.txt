@@ -3,6 +3,8 @@ db-dtypes
 dlt[bigquery]
 dlt[duckdb]
 geopandas
+dbt-core
+dbt-bigquery
 google-cloud-storage
 googleapis-common-protos
 grpcio
