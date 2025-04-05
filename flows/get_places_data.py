@@ -17,9 +17,10 @@ def bbox_to_polygon(bbox):
     lon_low, lat_low, lon_high, lat_high = bbox
     coords = [
         (lon_low, lat_low),
-        (lon_low, lat_high),
-        (lon_high, lat_high),
         (lon_high, lat_low),
+        (lon_high, lat_high),
+        (lon_low, lat_high),
+        (lon_low, lat_low),
     ]
     polygon = Polygon(coords)
     return polygon
