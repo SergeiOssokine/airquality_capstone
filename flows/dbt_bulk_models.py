@@ -1,8 +1,7 @@
 from prefect import flow
-from prefect_dbt import PrefectDbtRunner, PrefectDbtSettings
+from prefect_dbt import PrefectDbtRunner
 import os
 from prefect.logging import get_run_logger
-import time
 
 pth = os.path.dirname(__file__)
 
@@ -13,15 +12,10 @@ def build_sensors_per_location(flag):
     logger.info(f"I am in {os.getcwd()}")
     dbt_path = os.path.abspath(os.path.join(pth, "../dbt/airquality"))
     logger.info(f"The dbt_path is {dbt_path}")
-    logger.info("Napping for 10 seconds")
-    time.sleep(10)
-    logger.info("Now starting dbt commands")
-    runner = PrefectDbtRunner(
-        settings=PrefectDbtSettings(
-            project_dir=dbt_path,
-            profiles_dir=dbt_path,
-        )
-    )
+    # Workaround for https://github.com/PrefectHQ/prefect/issues/17555
+    os.environ["DBT_PROJECTS_DIR"] = dbt_path
+    os.environ["DBT_PROFILES_DIR"] = dbt_path
+    runner = PrefectDbtRunner()
 
     # First parse and compile to generate manifest
     runner.invoke(["parse"])
