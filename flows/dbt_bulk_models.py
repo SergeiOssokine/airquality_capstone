@@ -10,14 +10,19 @@ pth = os.path.dirname(__file__)
 def build_sensors_per_location(flag):
     logger = get_run_logger()
     logger.info(f"I am in {os.getcwd()}")
-    dbt_path = os.path.join(pth, "../dbt/airquality")
+    dbt_path = os.path.abspath(os.path.join(pth, "../dbt/airquality"))
     logger.info(f"The dbt_path is {dbt_path}")
-    PrefectDbtRunner(
+    runner = PrefectDbtRunner(
         settings=PrefectDbtSettings(
             project_dir=dbt_path,
             profiles_dir=dbt_path,
         )
-    ).invoke(["build"])
+    )
+    # First parse and compile to generate manifest
+    runner.invoke(["parse"])
+    runner.invoke(["compile"])
+    # Then build
+    runner.invoke(["build"])
 
 
 if __name__ == "__main__":
