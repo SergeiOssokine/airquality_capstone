@@ -15,11 +15,13 @@ pth = os.path.dirname(__file__)
 )
 def get_sensor_data(location: str, year: int, params: ProjectParams):
     proc = BulkProcessor(location, params.bucket_name, params.dwh, params.project_id)
-    proc.process_location(year)
+    return proc.process_location(year)
 
 
 @task(description="Create the raw data table from the parquet files")
-def create_raw_data_table(params: ProjectParams, table: str = "sensors_data"):
+def create_raw_data_table(
+    raw_file_path, params: ProjectParams, table: str = "sensors_data"
+):
     logger = fetch_logger()
 
     client = GcpCredentials.load("airquality-gcp-credentials").get_bigquery_client(
@@ -29,7 +31,7 @@ def create_raw_data_table(params: ProjectParams, table: str = "sensors_data"):
 LOAD DATA OVERWRITE {params.dwh}.{table}
 FROM FILES (
 format = 'PARQUET',
-uris = ['gs://bucket/path/file.parquet']);
+uris = ['{raw_file_path}']);
 """
     logger.info(query)
     client.query_and_wait(query)
@@ -39,12 +41,12 @@ uris = ['gs://bucket/path/file.parquet']);
 def setup_sensor_data_for_analysis(
     location: str = "Berlin", year: int = 2024, params: ProjectParams = None
 ):
-    sensor_data = get_sensor_data.submit(location, year, params)
-    create_raw_data_table.submit(params, wait_for=[sensor_data])
+    raw_file_path = get_sensor_data(location, year, params)
+    create_raw_data_table(raw_file_path, params)
 
 
 @flow(description="Run the dbt models to perform air quality analysis")
-def build_air_quality_analysis(flag):
+def build_air_quality_analysis():
     logger = fetch_logger()
     dbt_path = os.path.abspath(os.path.join(pth, "../dbt/airquality"))
     logger.info(f"The dbt_path is {dbt_path}")
@@ -66,8 +68,8 @@ def air_quality_analysis():
     project_id = os.getenv("PROJECT_ID")
     dwh = os.getenv("DWH_NAME")
     params = ProjectParams(bucket_name, dwh, project_id)
-    table = setup_sensor_data_for_analysis.submit(params=params)
-    build_air_quality_analysis.submit(wait_for=[table])
+    setup_sensor_data_for_analysis(params=params)
+    build_air_quality_analysis()
 
 
 if __name__ == "__main__":

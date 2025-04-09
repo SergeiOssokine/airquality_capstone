@@ -1,8 +1,8 @@
+import logging
+from dataclasses import dataclass
+
 from prefect.exceptions import MissingContextError
 from prefect.logging import get_logger, get_run_logger
-
-
-import logging
 
 
 def fetch_logger():
@@ -15,6 +15,7 @@ def fetch_logger():
     return logger
 
 
+@dataclass
 class ProjectParams:
     bucket_name: str
     dwh: str

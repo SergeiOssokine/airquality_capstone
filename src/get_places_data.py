@@ -12,7 +12,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from shapely import Polygon
-from utils import fetch_logger
+from src.utils import fetch_logger
 
 
 def bbox_to_polygon(bbox):

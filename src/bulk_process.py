@@ -10,8 +10,8 @@ from botocore import UNSIGNED
 from botocore.config import Config
 from prefect_gcp import GcpCredentials
 
-from upload_data_to_gcs import upload_many_files
-from utils import fetch_logger
+from src.upload_data_to_gcs import upload_many_files
+from src.utils import fetch_logger
 
 s3_client = boto3.client("s3", config=Config(signature_version=UNSIGNED))
 
@@ -51,7 +51,7 @@ class BulkProcessor:
     where location_name="{self.location_name}"
     """
         logger.info(query)
-        self.locations = client.query_and_wait(query).to_dataframe()["location_id"]
+        self.locations = client.query_and_wait(query).to_dataframe()["location_id"][:1]
 
     def _download_data(
         self,
@@ -101,9 +101,9 @@ class BulkProcessor:
         for day in day_list:
             with gzip.open(day, "rb") as fp:
                 df = pd.read_csv(fp)
-                df["datetime"] = pd.to_datetime(
-                    df["datetime"], utc=True, yearfirst=True, format="ISO8601"
-                )
+                # df["datetime"] = pd.to_datetime(
+                #     df["datetime"], utc=True, yearfirst=True, format="ISO8601"
+                # )
                 monthly_results.append(df)
 
         if monthly_results:
@@ -129,11 +129,12 @@ class BulkProcessor:
             self.get_location_list()
             self._download_data(year, location_path=location_path)
             data = self._process_one_year(year, location_path)
-            output_name = os.path.join(
-                location_path, f"data_{self.location_name}_{year}.parquet"
-            )
+            fname = f"data_{self.location_name}_{year}.parquet"
+            output_name = os.path.join(location_path, fname)
             data.to_parquet(output_name, index=False, compression="snappy")
             upload_many_files(self.project_bucket, self.dataset_name, [output_name])
+            gs_path = f"gs://{self.project_bucket}/{self.dataset_name}/{fname}"
+            return gs_path
 
 
 if __name__ == "__main__":
