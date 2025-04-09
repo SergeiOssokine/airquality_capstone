@@ -10,3 +10,5 @@ sources:
           places
       - name:
           sensors
+      - name:
+          sensors_data
