@@ -1,10 +1,11 @@
 beautifulsoup4
+boto3
 db-dtypes
+dbt-bigquery
+dbt-core
 dlt[bigquery]
 dlt[duckdb]
 geopandas
-dbt-core
-dbt-bigquery
 google-cloud-storage
 googleapis-common-protos
 grpcio

@@ -1,7 +1,9 @@
-from prefect import flow
-from prefect_dbt import PrefectDbtRunner
 import os
+
+from prefect import flow
 from prefect.logging import get_run_logger
+from prefect_dbt import PrefectDbtRunner
+
 
 pth = os.path.dirname(__file__)
 

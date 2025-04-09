@@ -2,6 +2,8 @@ import glob
 import os
 import shutil
 import zipfile
+from functools import partial
+from multiprocessing.pool import ThreadPool
 from typing import List
 
 import geopandas as gpd
@@ -9,8 +11,8 @@ import numpy as np
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from prefect.logging import get_run_logger
 from shapely import Polygon
+from utils import fetch_logger
 
 
 def bbox_to_polygon(bbox):
@@ -33,7 +35,7 @@ def convert_to_gis(full: pd.DataFrame):
 
 
 def download_file(url: str, chunk_size: int = 8192, results_dir: str = "places_data"):
-    logger = get_run_logger()
+    logger = fetch_logger()
     local_filename = os.path.join(results_dir, url.split("/")[-1])
     logger.info(f"Download data from {url} to {local_filename}")
 
@@ -46,7 +48,7 @@ def download_file(url: str, chunk_size: int = 8192, results_dir: str = "places_d
 
 
 def get_list_of_files(url: str) -> List[str]:
-    logger = get_run_logger()
+    logger = fetch_logger()
     logger.info("Generating list of files to download")
     response = requests.get(url)
     if response.ok:
@@ -66,7 +68,7 @@ def get_list_of_files(url: str) -> List[str]:
 
 
 def extract_data_from_file(file_name: str, directory_to_extract_to="tmp"):
-    logger = get_run_logger()
+    logger = fetch_logger()
     logger.info(f"Extracing data from {file_name}")
     fname = file_name.split(".")[0]
     with zipfile.ZipFile(file_name, "r") as zip_ref:
@@ -87,7 +89,7 @@ def extract_data_from_file(file_name: str, directory_to_extract_to="tmp"):
 
 
 def get_location_bounding_boxes(staging_area: str = "/tmp/airquality_staging_area"):
-    logger = get_run_logger()
+    logger = fetch_logger()
     base_url = "https://www.geoapify.com/data-share/localities/"
     file_dir = get_list_of_files(base_url)
     n_files = file_dir.shape[0]
@@ -95,10 +97,10 @@ def get_location_bounding_boxes(staging_area: str = "/tmp/airquality_staging_are
     logger.info(
         f"Will downloaded a total of {n_files} files, occupying {np.round(total_size)} MB of space"
     )
-    for i, row in file_dir.iterrows():
-        file = row["file_name"]
-        url = f"{base_url}/{file}"
-        download_file(url, results_dir=staging_area)
+
+    files_to_download = [f"{base_url}/{f}" for f in file_dir["file_name"].values]
+    pool = ThreadPool(8)
+    pool.map(partial(download_file, results_dir=staging_area), files_to_download)
     downloaded_files = glob.glob(f"{staging_area}/*.zip")
     processed_names = []
     for file in downloaded_files:

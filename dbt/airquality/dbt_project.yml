@@ -31,3 +31,11 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   airquality:
+    staging:
+      stg_sensors_per_location:
+        +tags: "setup"
+      stg_sensors_data:
+        +tags: "batch_analysis"
+    core:
+      core_sensors_data:
+        +tags: "batch_analysis"
