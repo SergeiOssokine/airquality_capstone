@@ -51,7 +51,7 @@ class BulkProcessor:
     where location_name="{self.location_name}"
     """
         logger.info(query)
-        self.locations = client.query_and_wait(query).to_dataframe()["location_id"][:1]
+        self.locations = client.query_and_wait(query).to_dataframe()["location_id"]
 
     def _download_data(
         self,
