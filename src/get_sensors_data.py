@@ -29,6 +29,12 @@ possible_names = [
 
 
 def fetch_logger():
+    """Return either a Prefect run logger if inside a Prefect task/flow
+    or a regular logger if not
+
+    Returns:
+        logging.Logger: The logger instance
+    """
     try:
         logger = get_run_logger()
     except MissingContextError:
@@ -39,6 +45,15 @@ def fetch_logger():
 
 
 def get_all_locations(api_key_name: str = "openaq-api-key") -> List[Dict[str, Any]]:
+    """Download the list of all locations and corresponding sensor IDs
+
+    Args:
+        api_key_name (str, optional): The name of the Prefect block where your
+            stored the OpenAQ API key. Defaults to "openaq-api-key".
+
+    Returns:
+        List[Dict[str, Any]]: The data structure of interest
+    """
     secret_block = Secret.load(api_key_name)
     logger = fetch_logger()
     url = "https://api.openaq.org/v3/locations"
@@ -79,10 +94,21 @@ def get_all_locations(api_key_name: str = "openaq-api-key") -> List[Dict[str, An
     return all_locations
 
 
-# Process the locations to extract coordinates and country info
+def extract_location_info(locations: List[Dict[str, Any]]) -> pd.DataFrame:
+    """Given the raw data from OpenAQ in json format extract the information
+    we care about:
+    - location_id
+    - name
+    - lat,lon
+    - country information
+    - sensor_ids
 
+    Args:
+        locations (List[Dict[str, Any]]): Raw location data from OpenAQ
 
-def extract_location_info(locations):
+    Returns:
+        pd.DataFrame: Subset of interesting information
+    """
     location_info = []
     country_info = {}
     for loc in locations:
@@ -116,12 +142,37 @@ def row_to_point(row):
 
 
 def add_geometry_info(df: pd.DataFrame) -> gpd.GeoDataFrame:
+    """Given a pandas DataFrame containing longitude and
+    latitude create a GeoPandas DataFrame where the geometry
+    column is of type Point with those coordinates
+
+    Args:
+        df (pd.DataFrame): The location information
+
+    Returns:
+        gpd.GeoDataFrame: Data with GEOMETRY column
+    """
     return gpd.GeoDataFrame(
         df, geometry=df[["longitude", "latitude"]].apply(row_to_point, axis=1)
     )
 
 
-def get_sensor_location_info(staging_area: str = "/tmp/airquality_staging_area"):
+def get_sensor_location_info(
+    staging_area: str = "/tmp/airquality_staging_area",
+) -> List[str]:
+    """Get information about the location of all sensors around the globe.
+
+    This function downloads all location data from OpenAQ, and then stores it in GeoParquet
+    format. This will be later combined with another GeoParquet data containing city/town/villages
+    bounding boxes to associate every sensor location with a known geogephical location like
+    "Berlin"
+
+    Args:
+        staging_area (str, optional): The folder where to temporarily download and write data. Defaults to "/tmp/airquality_staging_area".
+
+    Returns:
+        List[str]: List of output names
+    """
     logger = fetch_logger()
     # Get all locations and extract coordinates and country information
     logger.info("Downloading all raw location data")
@@ -133,7 +184,6 @@ def get_sensor_location_info(staging_area: str = "/tmp/airquality_staging_area")
     logger.info("Done extracting data")
     output_name = os.path.join(staging_area, "sensor_overview.parquet")
     logger.info(f"Saving the data to {output_name}")
-    print(location_info.head(5))
     location_info.to_parquet(output_name)
     return [output_name]
 

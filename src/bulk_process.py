@@ -3,6 +3,7 @@ import gzip
 import os
 import tempfile
 from multiprocessing.pool import ThreadPool
+from typing import List
 
 import boto3
 import pandas as pd
@@ -16,7 +17,14 @@ from src.utils import fetch_logger
 s3_client = boto3.client("s3", config=Config(signature_version=UNSIGNED))
 
 
-def _fetch(p):
+def _fetch(p: List[str]) -> None:
+    """Download a single file from s3.
+    This function is meant to be used with ThreadPool to download many files
+    at once.
+
+    Args:
+        p (List[str]): location of the file on s3 and local path to write to
+    """
     local_file_path, object_key, bucket_name = p
     with open(local_file_path, "wb") as data:
         print(f"Downloading {object_key} to {local_file_path}")
@@ -94,16 +102,13 @@ class BulkProcessor:
             pool.map(_fetch, data_paths)
             logger.info("Done downloading")
 
-    def _load_one_month(self, month: int, year_path: str):
+    def _process_one_month(self, month: int, year_path: str):
         pth = os.path.join(year_path, f"month={str(month).zfill(2)}")
         day_list = glob.glob(f"{pth}/*.csv.gz")
         monthly_results = []
         for day in day_list:
             with gzip.open(day, "rb") as fp:
                 df = pd.read_csv(fp)
-                # df["datetime"] = pd.to_datetime(
-                #     df["datetime"], utc=True, yearfirst=True, format="ISO8601"
-                # )
                 monthly_results.append(df)
 
         if monthly_results:
@@ -118,19 +123,34 @@ class BulkProcessor:
         logger.info(f"Processing all data in {year_path}")
         for month in range(1, 13):
             try:
-                tmp.append(self._load_one_month(month, year_path))
+                tmp.append(self._process_one_month(month, year_path))
             except OSError:
                 continue
         combined_data = pd.concat(tmp)
         return combined_data
 
-    def process_location(self, year: int, location_path: str = "."):
+    def process_location(self, year: int, location_path: str = ".") -> str:
+        """Given a geographical location and year, get all the data from
+        all the sensors for that year, combine it and upload to the datalake
+
+        Args:
+            year (int): The year of interest
+            location_path (str, optional): The path where to store temporarily files.
+                 Defaults to ".".
+
+        Returns:
+            str: The path to the processed data on GCP
+        """
         with tempfile.TemporaryDirectory() as location_path:
+            # Get the list location_ids corresponding to the geographical location
             self.get_location_list()
+            # Download all the data from all the sensors.
             self._download_data(year, location_path=location_path)
+            # Combine all the data into 1 DataFrame
             data = self._process_one_year(year, location_path)
             fname = f"data_{self.location_name}_{year}.parquet"
             output_name = os.path.join(location_path, fname)
+            # Save to parquet and upload to the datalake
             data.to_parquet(output_name, index=False, compression="snappy")
             upload_many_files(self.project_bucket, self.dataset_name, [output_name])
             gs_path = f"gs://{self.project_bucket}/{self.dataset_name}/{fname}"
