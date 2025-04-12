@@ -23,7 +23,7 @@ def build_sensors_per_location(flag):
     runner.invoke(["parse"])
     runner.invoke(["compile"])
     # Then build
-    runner.invoke(["build"])
+    runner.invoke(["run", "--select", "tag:setup"])
 
 
 if __name__ == "__main__":

@@ -49,14 +49,22 @@ def create_sensors_table(
     project_id: str = None, dwh: str = None, sensors_path: str = None
 ):
     create_table_in_dwh(
-        project_id=project_id, dwh=dwh, files_path=sensors_path, name="sensors"
+        project_id=project_id,
+        dwh=dwh,
+        files_path=sensors_path,
+        name="sensors",
+        cluster_by="geometry",
     )
 
 
 @task
 def create_places_table(project_id=None, dwh=None, places_path: str = None):
     create_table_in_dwh(
-        project_id=project_id, dwh=dwh, files_path=places_path, name="places"
+        project_id=project_id,
+        dwh=dwh,
+        files_path=places_path,
+        name="places",
+        cluster_by="geometry",
     )
 
 
