@@ -9,6 +9,10 @@
       
       
       
+        <link rel="prev" href="../location_data_deployment/">
+      
+      
+        <link rel="next" href="../../python_docs/modules_api/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -16,7 +20,7 @@
     
     
       
-        <title>Brief introduction to Prefect - Airquality Capstone Project</title>
+        <title>Performing analysis in detail - Airquality Capstone Project</title>
       
     
     
@@ -70,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#brief-introduction-to-prefect" class="md-skip">
+        <a href="#introduction" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Brief introduction to Prefect
+              Performing analysis in detail
             
           </span>
         </div>
@@ -231,18 +235,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
@@ -258,7 +264,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             User Guide
@@ -315,10 +321,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../analysis_deployment/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Performing analysis in detail
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -329,6 +357,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-discussion-of-the-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detailed discussion of the steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-analysis-dashboards" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Analysis (Dashboards)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -429,6 +495,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-discussion-of-the-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detailed discussion of the steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-analysis-dashboards" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Analysis (Dashboards)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -446,9 +538,20 @@
   
 
 
-<h1 id="brief-introduction-to-prefect">Brief introduction to Prefect</h1>
-<p><a href="https://www.prefect.io/">Prefect</a> is an open source orchestrator built on top of Python. It uses similar concepts to other offerings in the space, such as Kestra or Airflow. Just like in Kestra, the atomic units of work in Prefect are tasks, which are python functions that accomplish a given single goal. Again, similar to Kestra, tasks are combined together into flows which orchestrate the dependecies between tasks. Flows themselves can in turn be part of larger flows, creating a hierarchical structure. Finally, a deployment describes how, when (i.e. scheduling) and where a flow is executed. For example, a deployment can have the flow execute in a local process, on a Kubernetes cluster, in the Prefect Cloud or in another cloud provider. For this project we use a deployment that leverages a  <a href="https://docs.prefect.io/v3/deploy/infrastructure-examples/serverless">serverless push work pools</a>  where Prefect orchestrates the execution of jobs running in a Docker container on serverless computing architecture, which in our case is Google CloudRun. The deployment itself is hosted in Prefect Cloud.</p>
-<p>For more information on Prefect, see e.g. <a href="https://orion-docs.prefect.io/latest/tutorial/">here</a></p>
+<h1 id="introduction">Introduction</h1>
+<p>Now that we know how to associate a sensor with its human-readable geographical location, we can collect data for all the sensor ids that correspond to our desired location, which in our case is Berlin.</p>
+<h2 id="detailed-discussion-of-the-steps">Detailed discussion of the steps</h2>
+<p>This is accomplished by the <a href="https://github.com/SergeiOssokine/airquality_capstone/blob/main/flows/dbt_location_analysis.py"><code>airquality-analysis</code></a> flow, pictured below:</p>
+<p><img alt="" src="../images/second_deployment.svg" /></p>
+<p>For every sensor id, we download the sensor's measurement data from S3 for the latest complete year (2024). We do this via S3 instead of via OpenAQ API as this avoids rate-limiting, and the data can be batch-downloaded. This data includes, for every sensor, the readings of ${\rm NO}_2$, $\rm{O}_3$, and other pollutants on an hourly cadence, so we can expect to collect as many as (<code>number_of_sensors</code>) * 24 * 365 rows.</p>
+<p>The OpenAQ S3 archive returns compressed csv data, one csv file for every single day for every single sensor. This is a lot of files, so in the interest of not having so many uploads, we therefore create from these files one combined dataframe with all the data aggregated in it. We write this dataframe to a single compressed parquet file and this is then uploaded to our datalake (GCS). Since there is no geospatial information here, we do not need clustering and so we copy this table into the data warehouse for access in BigQuery, ensuring correct timestamp format.</p>
+<p>At this point we have only the raw data in our data warehouse (BQ) for sensor measurements. We once again use <code>dbt</code> to transform it to a final data product (<a href="https://github.com/SergeiOssokine/airquality_capstone/blob/main/dbt/airquality/models/core/core_sensors_data.sql"><code>core_sensors_data.sql</code></a>). We use <code>dbt</code> to compute the spatial average (across all sensor ids) for each pollutant. This is one value per hour, per pollutant, for all of Berlin. We then add this to the data read in from every individual sensor, so that we could better identify outlier sensors as needed.</p>
+<h2 id="further-analysis-dashboards">Further Analysis (Dashboards)</h2>
+<p>At this point our data products are ready for an analyst to make some useful conclusions. One of the things we might like to know is how bad the air quality is, by comparing the values of the pollutants in Berlin to the WHO-recommended maximum values. Do we exceed the recommended threshold? On what days?</p>
+<p>We select the spatial average in the dashboard to show the average ${\rm NO}_2$, $\rm{O}_3$, and PM2.5 averaged over a day (24 hourly readings) and present this against the WHO threshold.</p>
+<p><img alt="" src="../images/dashboard.png" /></p>
+<p>Some days are clearly above, but many days are clearly below. ${\rm NO}_2$, for example, is low during the summer periods, when many people are away on holiday and not driving their cars. We can also notice the overall increase in ozone $\rm{O}_3$ levels during the summer months which is due to the increased temperature and the correspondingly higher rate of photochemical reactions that produce ozone.</p>
+<p>We also count the number of days in a year where the levels of the pollutants exceeded the WHO recommended 24-hr exposure levels. The PM2.5 levels are most striking here, and we see that nearly a quarter of 2024's days exceeded the WHO-recommended safe limit in Berlin. Overall, elevated levels of this type of particulate matter <a href="https://ww2.arb.ca.gov/resources/inhalable-particulate-matter-and-health">has been linked</a> to adverse health effects such as cardiovascular disease.</p>
 
 
 

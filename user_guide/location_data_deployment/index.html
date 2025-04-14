@@ -12,7 +12,7 @@
         <link rel="prev" href="../user_guide/">
       
       
-        <link rel="next" href="../../python_docs/modules_api/">
+        <link rel="next" href="../analysis_deployment/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -384,7 +384,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../analysis_deployment.md" class="md-nav__link">
+      <a href="../analysis_deployment/" class="md-nav__link">
         
   
   
@@ -541,10 +541,10 @@
 <h1 id="introduction">Introduction</h1>
 <h2 id="openaq-data">OpenAQ data</h2>
 <p>OpenAQ provides data about the location and state of many sensors around the globe, including the GPS coordinates, as well as an amount of other auxiliary information.However, OpenAQ doesn't provide a recognisable geographical location for these sensors. E.g., their dataset download would only report the GPS coordinates of a particular sensor, and not that it is in Paris, or New Delhi, or Berlin. We would like to associate a sensor for a city location for this project to be able to filter on a human-readable geographical location, like a particular city. For us, that's Berlin.</p>
-<p>To do this, we need bounding box data. We can use Open Street Map Data by GeoApify which keeps an association of the geographical names of places like cities or towns and yields a corresponding bounding box in GPS coordinates. (We use GeoApify as their download method is easy to use and they have packaged the OpenStreetMapo data in a convenient way while keeping the same licence.). <strong>Once we have the bounding boxes we can then check if the GPS coordinates of the sensors fall in given bounding boxes, thus allowing us to associate these GPS coordinates with a geographic location</strong></p>
+<p>To do this, we need bounding box data. We can use Open Street Map Data by GeoApify which keeps an association of the geographical names of places like cities or towns and yields a corresponding bounding box in GPS coordinates. (We use GeoApify as their download method is easy to use and they have packaged the OpenStreetMap data in a convenient way while keeping the same licence.). <strong>Once we have the bounding boxes we can then check if the GPS coordinates of the sensors fall in given bounding boxes, thus allowing us to associate these GPS coordinates with a geographic location</strong>.</p>
 <h2 id="detailed-discussion-of-the-steps">Detailed discussion of the steps</h2>
-<p>This is accomplished by the <a href="https://github.com/SergeiOssokine/airquality_capstone/blob/main/flows/sensors_per_location.py"><code>sensors_per_location</code></a> flow, pictured below:</p>
-<p><img alt="" src="../images/first_deployment.png" /></p>
+<p>This is accomplished by the <a href="https://github.com/SergeiOssokine/airquality_capstone/blob/main/flows/sensors_per_location.py"><code>prepare-location-data</code></a> flow, pictured below:</p>
+<p><img alt="" src="../images/first_deployment.svg" /></p>
 <p>Here are the steps in more detail.</p>
 <p>First, we download both datasets from their sources. We select:</p>
 <ol>
@@ -556,10 +556,10 @@
 <ol>
 <li>convert the GIS information into <a href="https://shapely.readthedocs.io/en/stable/">shapely</a> geometry,</li>
 <li>re-save the data in <a href="https://geoparquet.org/">GeoParquet</a> file format,</li>
-<li>upload the data to datalake (GCS)</li>
+<li>upload the data to datalake (GCS).</li>
 </ol>
-<p>We then build tables from the raw data in our warehouse (BigQuery) corresponding to both sets of data. We cluster the data by geometry to improve performance Clustering by geometry column is the recommended way of improving geospatial operations in BigQuery, so we use it here in anticipation of the next step.</p>
-<p>Finally, we use <code>dbt</code> (see <a href="https://github.com/SergeiOssokine/airquality_capstone/blob/main/dbt/airquality/models/staging/stg_sensors_per_location.sql"><code>stg_sensors_per_location.sql</code></a>) to take the clustered dataset of geographical data, and the sensor data, both from the data warehouse.  Naively we could simply do an inner spatial join on the geometry column using the <code>ST_WITHIN</code> clause which would check if the given set of GPS coodinates is within given bounding box. However, there is a slight complication because the bounding boxes can and do overlap. To overcome this we do the following:</p>
+<p>We then build tables from the raw data in our warehouse (BigQuery) corresponding to both sets of data. We cluster the data by geometry to improve performance as this is the <a href="https://cloud.google.com/bigquery/docs/geospatial-data#partitioning_and_clustering_geospatial_data">recommended way</a> of improving geospatial operations in BigQuery.</p>
+<p>Finally, we use <code>dbt</code> (see <a href="https://github.com/SergeiOssokine/airquality_capstone/blob/main/dbt/airquality/models/staging/stg_sensors_per_location.sql"><code>stg_sensors_per_location.sql</code></a>) to take the clustered dataset of geographical data, and the sensor data, both from the data warehouse.  Naively we could simply do an inner spatial join on the geometry column using the <code>ST_WITHIN</code> clause which would check if the given set of GPS coodinates is within a given bounding box. However, there is a slight complication because the bounding boxes can and do overlap. To overcome this we do the following:</p>
 <ul>
 <li>compute the area of every bounding box for every geoegraphic location</li>
 <li>perform the spatial join</li>
