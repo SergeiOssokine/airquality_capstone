@@ -2,9 +2,9 @@ version: 2
 
 sources:
   - name: staging
-    database: dezoomcampslon
+    database: "{{ target.project }}"
     schema:
-      airquality_capstone_dwh
+      "{{ target.schema }}"
     tables:
       - name:
           places
