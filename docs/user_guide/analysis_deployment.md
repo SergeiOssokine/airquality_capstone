@@ -17,11 +17,12 @@ At this point we have only the raw data in our data warehouse (BQ) for sensor me
 
 At this point our data products are ready for an analyst to make some useful conclusions. One of the things we might like to know is how bad the air quality is, by comparing the values of the pollutants in Berlin to the WHO-recommended maximum values. Do we exceed the recommended threshold? On what days?
 
-We select the spatial average in the dashboard to show the average ${\rm NO}_2$, $\rm{O}_3$, and PM2.5 averaged over a day (24 hourly readings) and present this against the WHO threshold.
+We select the spatial average in the dashboard to show the average ${\rm NO}_2$, $\rm{O}_3$, and ${\rm PM}2.5$ averaged over a day (24 hourly readings) and present this against the WHO threshold.
 
 ![](./images/dashboard.png)
 
 Some days are clearly above, but many days are clearly below. ${\rm NO}_2$, for example, is low during the summer periods, when many people are away on holiday and not driving their cars. We can also notice the overall increase in ozone $\rm{O}_3$ levels during the summer months which is due to the increased temperature and the correspondingly higher rate of photochemical reactions that produce ozone.
 
-We also count the number of days in a year where the levels of the pollutants exceeded the WHO recommended 24-hr exposure levels. The PM2.5 levels are most striking here, and we see that nearly a quarter of 2024's days exceeded the WHO-recommended safe limit in Berlin. Overall, elevated levels of this type of particulate matter [has been linked](https://ww2.arb.ca.gov/resources/inhalable-particulate-matter-and-health) to adverse health effects such as cardiovascular disease.
+We also count the number of days in a year where the levels of the pollutants exceeded the WHO recommended 24-hr exposure levels. The ${\rm PM}2.5$ levels are most striking here, and we see that nearly a quarter of 2024's days exceeded the WHO-recommended safe limit in Berlin. Overall, elevated levels of this type of particulate matter [has been linked](https://ww2.arb.ca.gov/resources/inhalable-particulate-matter-and-health) to adverse health effects such as cardiovascular disease.
 
+Preset allows the export of entire dashboards as `yaml` configuration. The code to reproduce the dashboard can be found [here](https://github.com/SergeiOssokine/airquality_capstone/tree/main/dashboard-export).

@@ -34,7 +34,19 @@ def convert_to_gis(full: pd.DataFrame):
     ]
 
 
-def download_file(url: str, chunk_size: int = 8192, results_dir: str = "places_data"):
+def download_file(
+    url: str, chunk_size: int = 8192, results_dir: str = "places_data"
+) -> str:
+    """Download a file from the given url using chunking
+
+    Args:
+        url (str): The url of the file
+        chunk_size (int, optional): The chunking to use. Defaults to 8192.
+        results_dir (str, optional): The results folder. Defaults to "places_data".
+
+    Returns:
+        str: Full path to the saved file
+    """
     logger = fetch_logger()
     local_filename = os.path.join(results_dir, url.split("/")[-1])
     logger.info(f"Download data from {url} to {local_filename}")
@@ -48,6 +60,14 @@ def download_file(url: str, chunk_size: int = 8192, results_dir: str = "places_d
 
 
 def get_list_of_files(url: str) -> List[str]:
+    """Get a list of files to download by scraping url
+
+    Args:
+        url (str): The url to scrape
+
+    Returns:
+        List[str]: List of file names to download
+    """
     logger = fetch_logger()
     logger.info("Generating list of files to download")
     response = requests.get(url)
@@ -66,7 +86,21 @@ def get_list_of_files(url: str) -> List[str]:
     return df
 
 
-def extract_data_from_file(file_name: str, directory_to_extract_to="tmp"):
+def extract_data_from_file(
+    file_name: str, directory_to_extract_to="tmp"
+) -> pd.DataFrame:
+    """Given the compressed downloaded file, uncompress it, read all ndjson files and
+    combine the data into a single pandas DataFrame. Also cleans up by deleteing extracted
+    files.
+
+    Args:
+        file_name (str): The path to the file to process
+        directory_to_extract_to (str, optional): Where to temporarily extract data.
+            Defaults to "tmp".
+
+    Returns:
+        pd.DataFrame: All the combined data from the file
+    """
     logger = fetch_logger()
     logger.info(f"Extracing data from {file_name}")
     fname = file_name.split(".")[0]

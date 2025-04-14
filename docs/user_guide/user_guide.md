@@ -23,10 +23,6 @@ The overall architecture of the project is shown below:
 
 ![](./images/architecture.svg)
 
-
-
-You can find detailed documentation [here](https://sergeiossokine.github.io/airquality_capstone/).
-
 ## Setting up
 
 You will need the following running on your machine:
@@ -161,6 +157,7 @@ gcloud auth configure-docker europe-west1-docker.pkg.dev
 If you changed the `gcp_region` variable in `config.yaml` you will need to adjust the command accordingly.
 
 You can now run the following to build and push the image:
+
 ```bash
 make create_work_image
 ```
@@ -170,6 +167,7 @@ make create_work_image
 OpenAQ provides data from thousands of different sensors around the globe. Each sensor has a unique ID (sensor_id) and location (encoded as longitude, latitude) as well as location ID. To analyze a particular geographical location by name (e.g. a city like Toronto or New Dehli) we need to associate the `location_id` with the geographical location. For a much more detailed breakdown, see [here](location_data_deployment.md).
 
 To start the flow run
+
 ```bash
 make trigger_setup_flow
 ```
@@ -178,14 +176,19 @@ Follow the link to see the progress of this job. It should take around 10 minute
 
 ### Performing the analysis
 
-Next we perform the actual analysis and obtain the dataset that computes that shows the hourly measurements of different pollutants at all the different stations in Berlin, as well as their spatial average. For more details, see [here]().
+Next we perform the actual analysis and obtain the dataset that computes that shows the hourly measurements of different pollutants at all the different stations in Berlin, as well as their spatial average. For more step-by-step description, see [here](analysis_deployment.md).
 
 To execute the analysis run
+
 ```bash
 make trigger_analysis_flow
 ```
 
 This job will take about 3 minutes to run and will create the final dataset needed for creating the dashboard.
+
+The resulting dashboard showing daily averages for various pollutants can be seen below:
+
+![](./images/dashboard.png)
 
 ## Data sources
 
