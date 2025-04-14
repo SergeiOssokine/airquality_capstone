@@ -1,15 +1,19 @@
 
 # Air quality capstone project
 
-## Background
+## Introduction and Problem Statement
 
-**In this project we analyze 2024 air quality data for Berlin. In particular, we compute the daily averages different pollutants and compare them to the recommendations by World Health Organization(WHO).**
+Cities face a lot of problems with poor air quality due to a number of polluting factors, such as high levels of industrialisation, more cars, and factories. Extensive studies have shown that poor air quality is connected to a vast range of long-term health ailments.
+
+Recently, more and more detailed data has become available online through the coordination of universities, government agencies, companies, and citizen scientists, giving us a wealth of information about the extent of the problem and the impact that various approaches to tackling air pollutions might have.
+
+**In this project we analyze 2024 air quality data for Berlin. In particular, we compute the daily averages for different pollutants and compare them to the recommendations by World Health Organization (WHO).**
 
 We use the following tech stack:
 
 - [Docker](https://www.docker.com/) for containerisation
 - [Prefect Cloud](https://www.prefect.io/) for orchestration
-- [Google Cloud Platform](https://cloud.google.com/) for cloud services, in particular Cloud Storage as a data lake, BigQuery as a data warehouse, and CloudRun for containarized executions of `Prefect` jobs.
+- [Google Cloud Platform](https://cloud.google.com/) for cloud services, in particular Cloud Storage as a data lake, BigQuery as a data warehouse, and CloudRun for containerized executions of `Prefect` jobs.
 - [dbt](https://www.getdbt.com/) to orchestrate and perform SQL transformations
 - [Preset](https://preset.io/), a managed solution for [Apache Superset](https://superset.apache.org/) for dashboarding
 - [Terraform](https://www.terraform.io/) for provisioning resources on GCP and Prefect Cloud
@@ -18,6 +22,10 @@ We use the following tech stack:
 The overall architecture of the project is shown below:
 
 ![](./images/architecture.svg)
+
+
+
+You can find detailed documentation [here](https://sergeiossokine.github.io/airquality_capstone/).
 
 ## Setting up
 
@@ -46,7 +54,11 @@ You will need to set up a GCP account and create a project. Create a free accoun
 
 ### Prefect Cloud
 
-For orchestration we will use Prefect Cloud, which has a generous free tier. To get started, create a free account and then create an API key and save it as recommended via the `prefect cloud login -k <your-api-key>`.
+For orchestration we will use Prefect Cloud, which has a generous free tier. To get started, create a free account and then create an API key and save it as recommended via the `prefect cloud login -k <your-api-key>`. Also run
+
+```bash
+export PREFECT_API_KEY="<your-api-key>"
+```
 
 ### OpenAQ
 
@@ -101,8 +113,8 @@ which will:
 You will need to configure the project by editing the file `setup/conf/config.yaml`. At a minimum, you must provide the following:
 
 - `gcp_project_name` - the name of the GCP project you have created
-- `gcp_credentials` - the path to the JSON file with GCP credentials for the service account
-- `openaq_credentials` - the path to the file that contains your OpenAQ API key
+- `gcp_credentials` - the absolute path to the JSON file with GCP credentials for the service account
+- `openaq_credentials` - the absolute path to the file that contains your OpenAQ API key
 
 Once you have done this, run
 
@@ -117,7 +129,7 @@ This will do the following:
 
 ### Preparing GCP infrastructure
 
-The project uses GCS as a data lake and BigQuery as a data warehouse. This infrastrture is managed via Terraform. To deploy it,
+The project uses GCS as a data lake and BigQuery as a data warehouse. This infrastructure is managed via Terraform. To deploy it,
 run
 
 ```bash
@@ -129,7 +141,8 @@ Aside from a GCS bucket and a BigQuery dataset, we also create a Artifact Regist
 
 ### Preparing Prefect deployments
 
-We use Prefect as the orchestrator, similar to Kestra used in the course. For a quick summary of relevant concepts, see [here](prefect.md)
+We use Prefect as the orchestrator, similar to Kestra used in the course. For a quick summary of relevant concepts, see [here](prefect.md).
+To make the deployments run
 
 ```bash
 make deploy_prefect_flows
@@ -147,6 +160,7 @@ gcloud auth configure-docker europe-west1-docker.pkg.dev
 
 If you changed the `gcp_region` variable in `config.yaml` you will need to adjust the command accordingly.
 
+You can now run the following to build and push the image:
 ```bash
 make create_work_image
 ```
@@ -155,6 +169,7 @@ make create_work_image
 
 OpenAQ provides data from thousands of different sensors around the globe. Each sensor has a unique ID (sensor_id) and location (encoded as longitude, latitude) as well as location ID. To analyze a particular geographical location by name (e.g. a city like Toronto or New Dehli) we need to associate the `location_id` with the geographical location. For a much more detailed breakdown, see [here](location_data_deployment.md).
 
+To start the flow run
 ```bash
 make trigger_setup_flow
 ```
@@ -163,14 +178,15 @@ Follow the link to see the progress of this job. It should take around 10 minute
 
 ### Performing the analysis
 
-Next we perform the actual analysis and obtain the dataset that computes that shows the hourly measurements of different pollutants at all the different stations in Berlin, as well as their spatial average. For more details, see [here]()
+Next we perform the actual analysis and obtain the dataset that computes that shows the hourly measurements of different pollutants at all the different stations in Berlin, as well as their spatial average. For more details, see [here]().
 
+To execute the analysis run
 ```bash
 make trigger_analysis_flow
 ```
 
-This job will take about 3 minutes to run and will create the final dataset needed for creatng the dashboard.
+This job will take about 3 minutes to run and will create the final dataset needed for creating the dashboard.
 
 ## Data sources
 
-The measurement data comes from [OpenAQ](https://openaq.org/), which provides data via API as well as bulk download. We also make use of geographical location data from [GeoApify](https://www.geoapify.com/), see in particular [here](https://www.geoapify.com/download-all-the-cities-towns-villages/). The daily limits for exposure to different pollutants were taken from the [2021 WHO guidelines](https://www.who.int/news-room/feature-stories/detail/what-are-the-who-air-quality-guidelines)
+The measurement data comes from [OpenAQ](https://openaq.org/), which provides data via API as well as bulk download. We also make use of geographical location data from [GeoApify](https://www.geoapify.com/), see in particular [here](https://www.geoapify.com/download-all-the-cities-towns-villages/). The daily limits for exposure to different pollutants were taken from the [2021 WHO guidelines](https://www.who.int/news-room/feature-stories/detail/what-are-the-who-air-quality-guidelines).
