@@ -1,0 +1,6 @@
+
+# Brief introduction to Prefect
+
+[Prefect](https://www.prefect.io/) is an open source orchestrator built on top of Python. It uses similar concepts to other offerings in the space, such as Kestra or Airflow. Just like in Kestra, the atomic units of work in Prefect are tasks, which are python functions that accomplish a given single goal. Again, similar to Kestra, tasks are combined together into flows which orchestrate the dependecies between tasks. Flows themselves can in turn be part of larger flows, creating a hierarchical structure. Finally, a deployment describes how, when (i.e. scheduling) and where a flow is executed. For example, a deployment can have the flow execute in a local process, on a Kubernetes cluster, in the Prefect Cloud or in another cloud provider. For this project we use a deployment that leverages a  [serverless push work pools](https://docs.prefect.io/v3/deploy/infrastructure-examples/serverless)  where Prefect orchestrates the execution of jobs running in a Docker container on serverless computing architecture, which in our case is Google CloudRun. The deployment itself is hosted in Prefect Cloud.
+
+For more information on Prefect, see e.g. [here](https://orion-docs.prefect.io/latest/tutorial/)
