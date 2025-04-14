@@ -34,6 +34,10 @@ variable "gcp_project_name" {
   description = "The name of the GCP project"
 }
 variable "gcp_region" {
-  type = string
+  type        = string
   description = "The region in which all the GCP resources are"
+}
+variable "gcp_location" {
+  type        = string
+  description = "The location of the GCP project (e.g EU, US)"
 }
