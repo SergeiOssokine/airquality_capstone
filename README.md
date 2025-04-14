@@ -35,7 +35,13 @@ For orchestration we will use Prefect Cloud, which has a generous free tier. To 
 
 ### OpenAQ
 
-In order to be able to download the air quality data you will need an OpenAQ API key. Create a free account and get the API key as described [here](https://docs.openaq.org/using-the-api/api-key) and store it in a safe place.
+In order to be able to download the air quality data you will need an OpenAQ API key. Create a free account and get the API key as described [here](https://docs.openaq.org/using-the-api/api-key) and store it in a safe place, in a `json` file that looks like
+
+```json
+{
+    "value":"YOURAPIKEYHERE"
+}
+```
 
 ### Preset
 
@@ -85,7 +91,7 @@ You will need to configure the project by editing the file `setup/conf/config.ya
 
 Once you have done this, run
 
-```
+```bash
 make create_config
 ```
 
@@ -99,7 +105,7 @@ This will do the following:
 The project uses GCS as a data lake and BigQuery as a data warehouse. This infrastrture is managed via Terraform. To deploy it,
 run
 
-```
+```bash
 make deploy_infra
 ```
 
@@ -110,13 +116,14 @@ Aside from a GCS bucket and a BigQuery dataset, we also create a Artifact Regist
 
 We use Prefect as the orchestrator, similar to Kestra used in the course.
 
-```
+```bash
 make deploy_prefect_flows
 ```
 
 This will create all the necessary resources on Prefect cloud to be ready to run analysis jobs.
 
 ### Build and push the job docker image
+
 To be able to push the docker image to the Artifact Registry on GCP that we created you need to authorize this. Do so by running:
 
 ```bash
@@ -125,7 +132,7 @@ gcloud auth configure-docker europe-west1-docker.pkg.dev
 
 If you changed the `gcp_region` variable in `config.yaml` you will need to adjust the command accordingly.
 
-```
+```bash
 make create_work_image
 ```
 
@@ -133,7 +140,7 @@ make create_work_image
 
 OpenAQ provides data from thousands of different sensors around the globe. Each sensor has a unique ID (sensor_id) and location (encoded as longitude, latitude) as well as location ID. To analyze a particular geographical location by name (e.g. a city like Toronto or New Dehli) we need to associate the `location_id` with the geographical location. For a more detailed breakdown, see [here]().
 
-```
+```bash
 make trigger_setup_flow
 ```
 
@@ -141,10 +148,12 @@ Follow the link to see the progress of this job. It should take around 10 minute
 
 ### Performing the analysis
 
-```
+Next we perform the actual analysis and obtain the dataset that computes that shows the hourly measurements of different pollutants at all the different stations in Berlin, as well as their spatial average. For more details, see [here]()
+
+```bash
 make trigger_analysis_flow
 ```
 
 ## Data sources
 
-The measurement data comes from [OpenAQ](https://openaq.org/), which provides data via API as well as bulk download. We also make use of geographical location data from [GeoApify](https://www.geoapify.com/), see in particular [here](https://www.geoapify.com/download-all-the-cities-towns-villages/)
+The measurement data comes from [OpenAQ](https://openaq.org/), which provides data via API as well as bulk download. We also make use of geographical location data from [GeoApify](https://www.geoapify.com/), see in particular [here](https://www.geoapify.com/download-all-the-cities-towns-villages/). The daily limits for exposure to different pollutants were taken from the [2021 WHO guidelines](https://www.who.int/news-room/feature-stories/detail/what-are-the-who-air-quality-guidelines)
