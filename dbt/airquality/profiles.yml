@@ -4,9 +4,9 @@ airquality:
     dev:
       type: bigquery
       method: service-account-json
-      project: "{{ prefect.blocks.json.gcp_config.project_name }}"
-      dataset: "{{ prefect.blocks.json.gcp_config.data_warehouse_name }}"
-      location: "{{ prefect.blocks.json.gcp_config.location }}"
+      project: "{{ prefect.blocks.json.gcp-config.project_name }}"
+      dataset: "{{ prefect.blocks.json.gcp-config.data_warehouse_name }}"
+      location: "{{ prefect.blocks.json.gcp-config.location }}"
       threads: 4 # Must be a value of 1 or greater
       keyfile_json:
         type: "{{prefect.blocks.gcp-credentials.airquality-gcp-credentials.service_account_info.type}}"
