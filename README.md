@@ -4,7 +4,7 @@
 
 **In this project we analyze 2024 air quality data for Berlin. In particular, we examine the daily,weekly and monthly trends for different pollutants and compare them to the recommendations by WHO.**
 
-## Setitng up
+## Setting up
 
 You will need the following running on your machine:
 
@@ -95,7 +95,7 @@ Aside from a GCS bucket and a BigQuery dataset, we also create a Artifact Regist
 We use Prefect as the orchestrator, similar to Kestra used in the course.
 
 ```
-make deploy_flows
+make deploy_prefect_flows
 ```
 This will create all the necessary resources on Prefect cloud to be ready to run analysis jobs.
 
