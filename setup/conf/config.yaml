@@ -1,0 +1,16 @@
+# This is the configuration for the entire project.
+
+# Configuration for GCP infrastructure
+gcp:
+  gcp_project_name: "MYPROJECTNAME"
+  gcp_region: europe-west1
+  gcp_location: EU
+  datalake_bucket_name: "airquality_capstone_datalake"
+  data_warehouse_name: "airquality_capstone_dwh"
+  artifact_registry_name: "prefect-images"
+  gcp_credentials: "/path/to/gcp_creds.json"
+
+# Configuration for Prefect infrastructure
+prefect:
+  openaq_credentials: "/path/to/.openaq.json"
+  docker_image_name: "airquality_capstone:v0.1"
