@@ -813,7 +813,6 @@
 </ul>
 <p>The overall architecture of the project is shown below:</p>
 <p><img alt="" src="../images/architecture.svg" /></p>
-<p>You can find detailed documentation <a href="https://sergeiossokine.github.io/airquality_capstone/">here</a>.</p>
 <h2 id="setting-up">Setting up</h2>
 <p>You will need the following running on your machine:</p>
 <ul>
@@ -900,21 +899,23 @@ To make the deployments run</p>
 <div class="highlight"><pre><span></span><code>gcloud<span class="w"> </span>auth<span class="w"> </span>configure-docker<span class="w"> </span>europe-west1-docker.pkg.dev
 </code></pre></div>
 <p>If you changed the <code>gcp_region</code> variable in <code>config.yaml</code> you will need to adjust the command accordingly.</p>
-<p>You can now run the following to build and push the image:
+<p>You can now run the following to build and push the image:</p>
 <div class="highlight"><pre><span></span><code>make<span class="w"> </span>create_work_image
-</code></pre></div></p>
+</code></pre></div>
 <h3 id="preparing-the-location-data">Preparing the location data</h3>
 <p>OpenAQ provides data from thousands of different sensors around the globe. Each sensor has a unique ID (sensor_id) and location (encoded as longitude, latitude) as well as location ID. To analyze a particular geographical location by name (e.g. a city like Toronto or New Dehli) we need to associate the <code>location_id</code> with the geographical location. For a much more detailed breakdown, see <a href="../location_data_deployment/">here</a>.</p>
-<p>To start the flow run
+<p>To start the flow run</p>
 <div class="highlight"><pre><span></span><code>make<span class="w"> </span>trigger_setup_flow
-</code></pre></div></p>
+</code></pre></div>
 <p>Follow the link to see the progress of this job. It should take around 10 minutes to run.</p>
 <h3 id="performing-the-analysis">Performing the analysis</h3>
-<p>Next we perform the actual analysis and obtain the dataset that computes that shows the hourly measurements of different pollutants at all the different stations in Berlin, as well as their spatial average. For more details, see <a href="">here</a>.</p>
-<p>To execute the analysis run
+<p>Next we perform the actual analysis and obtain the dataset that computes that shows the hourly measurements of different pollutants at all the different stations in Berlin, as well as their spatial average. For more step-by-step description, see <a href="../analysis_deployment/">here</a>.</p>
+<p>To execute the analysis run</p>
 <div class="highlight"><pre><span></span><code>make<span class="w"> </span>trigger_analysis_flow
-</code></pre></div></p>
+</code></pre></div>
 <p>This job will take about 3 minutes to run and will create the final dataset needed for creating the dashboard.</p>
+<p>The resulting dashboard showing daily averages for various pollutants can be seen below:</p>
+<p><img alt="" src="../images/dashboard.png" /></p>
 <h2 id="data-sources">Data sources</h2>
 <p>The measurement data comes from <a href="https://openaq.org/">OpenAQ</a>, which provides data via API as well as bulk download. We also make use of geographical location data from <a href="https://www.geoapify.com/">GeoApify</a>, see in particular <a href="https://www.geoapify.com/download-all-the-cities-towns-villages/">here</a>. The daily limits for exposure to different pollutants were taken from the <a href="https://www.who.int/news-room/feature-stories/detail/what-are-the-who-air-quality-guidelines">2021 WHO guidelines</a>.</p>
 
