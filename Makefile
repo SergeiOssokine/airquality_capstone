@@ -7,7 +7,7 @@ setup_env: ## Set up the local environment by installing the required Python pac
 create_config: ## Generate necessary configuration files based on user-specified configs.
 	python setup/infra/create_config.py
 
-deploy_gcp_infra: ## Deploy necessary infrastucture to GCP using terraform
+deploy_infra: ## Deploy necessary infrastucture to GCP using terraform
 	bash setup/infra/deploy_infra.sh
 
 create_work_image: ## Build and push the docker image in which are our Prefect jobs will run
