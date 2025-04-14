@@ -1,4 +1,4 @@
-# Air quality capstopne project
+# Air quality capstone project
 
 ## Background
 
@@ -12,6 +12,9 @@ You will need the following running on your machine:
 - Terraform (v1.11.3 or later)
 - jq-1.6
 - GNU make (4.3 or later)
+- Google Cloud CLI (`gcloud`).
+
+Make sure all of these are in your `PATH`.
 
 **Note that this project will work on Linux-like operating systems. If you are on Windows, you will need to use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install).**
 
@@ -44,6 +47,18 @@ Throughout the project,  we use `make` to perform various actions. Note that whe
 
 ```
 make help
+```
+
+Log in to cloud services (use browser-based authentication)
+
+```
+gcloud auth login
+```
+
+and
+
+```
+prefect cloud login
 ```
 
 ### Setting up python
@@ -92,14 +107,23 @@ Terraform will show what infrastructure will be created. Type in "yes" when aske
 Aside from a GCS bucket and a BigQuery dataset, we also create a Artifact Registry repository to hold the docker image that is used for analysis.
 
 ### Preparing Prefect deployments
+
 We use Prefect as the orchestrator, similar to Kestra used in the course.
 
 ```
 make deploy_prefect_flows
 ```
+
 This will create all the necessary resources on Prefect cloud to be ready to run analysis jobs.
 
-### Build the job docker image
+### Build and push the job docker image
+To be able to push the docker image to the Artifact Registry on GCP that we created you need to authorize this. Do so by running:
+
+```bash
+gcloud auth configure-docker europe-west1-docker.pkg.dev
+```
+
+If you changed the `gcp_region` variable in `config.yaml` you will need to adjust the command accordingly.
 
 ```
 make create_work_image
@@ -112,6 +136,7 @@ OpenAQ provides data from thousands of different sensors around the globe. Each 
 ```
 make trigger_setup_flow
 ```
+
 Follow the link to see the progress of this job. It should take around 10 minutes to run.
 
 ### Performing the analysis
