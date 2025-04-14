@@ -1,0 +1,100 @@
+table_name: days_exceeding_safe_limits
+main_dttm_col: null
+description: null
+default_endpoint: null
+offset: 0
+cache_timeout: null
+catalog: dezoomcampslon
+schema: airquality_capstone_dwh
+sql: "with daily_averages AS(\nselect  \n  location_name,\n  quantity,\n  DATE(time_stamp)\
+  \ AS day,\n  AVG(value) as avg_daily_value\nfrom airquality_capstone_dwh.core_sensors_data\
+  \ \nwhere quantity in ('no2','o3','pm25')\ngroup by location_name,quantity,DATE(time_stamp)\n\
+  ),\nexceeded_limits as(\nselect \n  location_name,\n  quantity,\n  day,\n  avg_daily_value,\n\
+  \  CASE\n  WHEN quantity = \"no2\" AND avg_daily_value >=25 THEN 1 \n  WHEN quantity\
+  \ = \"o3\" AND avg_daily_value >=100 THEN 1 \n  WHEN quantity = \"pm25\" AND avg_daily_value\
+  \ >=15 THEN 1\n  ELSE\n  0\n  END AS exceeded_limit\n  from daily_averages\n)\n\
+  select location_name,quantity,sum(exceeded_limit) as days_exceeding_limit,\n  count(day)\
+  \ as total_days,\n  ROUND(SUM(exceeded_limit)/count(day)*100,2) as percent_days_exceeding\n\
+  from exceeded_limits\ngroup by location_name,quantity\norder by location_name\n\
+  \  \n"
+params: null
+template_params: null
+filter_select_enabled: true
+fetch_values_predicate: null
+extra: null
+normalize_columns: false
+always_filter_main_dttm: false
+uuid: 5465eaf6-b7b3-4963-9e72-987a78490755
+metrics:
+- metric_name: count
+  verbose_name: COUNT(*)
+  metric_type: count
+  expression: COUNT(*)
+  description: null
+  d3format: null
+  currency: null
+  extra: null
+  warning_text: null
+columns:
+- column_name: percent_days_exceeding
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: FLOAT
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: null
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: days_exceeding_limit
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: INTEGER
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: null
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: total_days
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: INTEGER
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: null
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: location_name
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: STRING
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: null
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: quantity
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: STRING
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: null
+  description: null
+  python_date_format: null
+  extra: null
+version: 1.0.0
+database_uuid: cf405340-5f6c-4448-896d-a490107f1c12

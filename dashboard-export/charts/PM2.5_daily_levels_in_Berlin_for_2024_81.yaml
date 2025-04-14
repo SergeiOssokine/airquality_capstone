@@ -1,0 +1,137 @@
+slice_name: PM2.5 daily levels in Berlin for 2024
+description: null
+certified_by: null
+certification_details: null
+viz_type: echarts_timeseries_line
+params:
+  datasource: 27__table
+  viz_type: echarts_timeseries_line
+  slice_id: 81
+  x_axis: time_stamp
+  time_grain_sqla: P1D
+  x_axis_sort_asc: true
+  x_axis_sort_series: name
+  x_axis_sort_series_ascending: true
+  metrics:
+  - aggregate: AVG
+    column:
+      advanced_data_type: null
+      certification_details: null
+      certified_by: null
+      column_name: value
+      description: null
+      expression: null
+      filterable: true
+      groupby: true
+      id: 773
+      is_certified: false
+      is_dttm: false
+      python_date_format: null
+      type: FLOAT64
+      type_generic: 0
+      verbose_name: null
+      warning_markdown: null
+    datasourceWarning: false
+    expressionType: SIMPLE
+    hasCustomLabel: false
+    label: AVG(value)
+    optionName: metric_gsfnkhkkkku_bnqwtagyg4g
+    sqlExpression: null
+  groupby:
+  - location_name
+  adhoc_filters:
+  - clause: WHERE
+    comparator: No filter
+    datasourceWarning: false
+    expressionType: SIMPLE
+    filterOptionName: filter_7d6k4h4hqaw_8p4s5apb99y
+    isExtra: false
+    isNew: false
+    operator: TEMPORAL_RANGE
+    sqlExpression: null
+    subject: time_stamp
+  - clause: WHERE
+    comparator: pm25
+    datasourceWarning: false
+    expressionType: SIMPLE
+    filterOptionName: filter_p1wr7e68mzj_t2ru8ozvxb
+    isExtra: false
+    isNew: false
+    operator: ==
+    operatorId: EQUALS
+    sqlExpression: null
+    subject: quantity
+  - clause: WHERE
+    comparator: Spatial average
+    datasourceWarning: false
+    expressionType: SIMPLE
+    filterOptionName: filter_fp8132uo7cc_a1602sc5nqo
+    isExtra: false
+    isNew: false
+    operator: ==
+    operatorId: EQUALS
+    sqlExpression: null
+    subject: location_name
+  order_desc: true
+  row_limit: 10000
+  truncate_metric: true
+  show_empty_columns: true
+  comparison_type: values
+  annotation_layers:
+  - annotationType: FORMULA
+    color: '#e04355'
+    descriptionColumns: []
+    hideLine: false
+    intervalEndColumn: ''
+    name: PM2.5 daily limit
+    opacity: ''
+    overrides: {}
+    show: true
+    showLabel: false
+    showMarkers: false
+    sourceType: ''
+    style: dashed
+    timeColumn: ''
+    titleColumn: ''
+    value: '15'
+    width: 1
+  forecastPeriods: 10
+  forecastInterval: 0.8
+  x_axis_title: Date
+  x_axis_title_margin: 30
+  y_axis_title: PM2.5
+  y_axis_title_margin: 30
+  y_axis_title_position: Left
+  sort_series_type: sum
+  color_scheme: supersetColors
+  time_shift_color: true
+  seriesType: line
+  only_total: true
+  opacity: 0.2
+  markerSize: 6
+  show_legend: true
+  legendType: scroll
+  legendOrientation: top
+  x_axis_time_format: smart_date
+  rich_tooltip: true
+  showTooltipTotal: true
+  tooltipTimeFormat: smart_date
+  y_axis_format: SMART_NUMBER
+  truncateXAxis: true
+  y_axis_bounds:
+  - null
+  - null
+  extra_form_data: {}
+  dashboards:
+  - 10
+query_context: '{"datasource":{"id":27,"type":"table"},"force":false,"queries":[{"filters":[{"col":"time_stamp","op":"TEMPORAL_RANGE","val":"No
+  filter"},{"col":"quantity","op":"==","val":"pm25"},{"col":"location_name","op":"==","val":"Spatial
+  average"}],"extras":{"time_grain_sqla":"P1D","having":"","where":""},"applied_time_extras":{},"columns":[{"timeGrain":"P1D","columnType":"BASE_AXIS","sqlExpression":"time_stamp","label":"time_stamp","expressionType":"SQL"},"location_name"],"metrics":[{"aggregate":"AVG","column":{"advanced_data_type":null,"certification_details":null,"certified_by":null,"column_name":"value","description":null,"expression":null,"filterable":true,"groupby":true,"id":773,"is_certified":false,"is_dttm":false,"python_date_format":null,"type":"FLOAT64","type_generic":0,"verbose_name":null,"warning_markdown":null},"datasourceWarning":false,"expressionType":"SIMPLE","hasCustomLabel":false,"label":"AVG(value)","optionName":"metric_gsfnkhkkkku_bnqwtagyg4g","sqlExpression":null}],"orderby":[[{"aggregate":"AVG","column":{"advanced_data_type":null,"certification_details":null,"certified_by":null,"column_name":"value","description":null,"expression":null,"filterable":true,"groupby":true,"id":773,"is_certified":false,"is_dttm":false,"python_date_format":null,"type":"FLOAT64","type_generic":0,"verbose_name":null,"warning_markdown":null},"datasourceWarning":false,"expressionType":"SIMPLE","hasCustomLabel":false,"label":"AVG(value)","optionName":"metric_gsfnkhkkkku_bnqwtagyg4g","sqlExpression":null},false]],"annotation_layers":[{"annotationType":"FORMULA","color":"#e04355","descriptionColumns":[],"hideLine":false,"intervalEndColumn":"","name":"PM2.5
+  daily limit","opacity":"","overrides":{},"show":true,"showLabel":false,"showMarkers":false,"sourceType":"","style":"dashed","timeColumn":"","titleColumn":"","value":"15","width":1}],"row_limit":10000,"series_columns":["location_name"],"series_limit":0,"order_desc":true,"url_params":{},"custom_params":{},"custom_form_data":{},"time_offsets":[],"post_processing":[{"operation":"pivot","options":{"index":["time_stamp"],"columns":["location_name"],"aggregates":{"AVG(value)":{"operator":"mean"}},"drop_missing_columns":false}},{"operation":"rename","options":{"columns":{"AVG(value)":null},"level":0,"inplace":true}},{"operation":"flatten"}]}],"form_data":{"datasource":"27__table","viz_type":"echarts_timeseries_line","slice_id":81,"x_axis":"time_stamp","time_grain_sqla":"P1D","x_axis_sort_asc":true,"x_axis_sort_series":"name","x_axis_sort_series_ascending":true,"metrics":[{"aggregate":"AVG","column":{"advanced_data_type":null,"certification_details":null,"certified_by":null,"column_name":"value","description":null,"expression":null,"filterable":true,"groupby":true,"id":773,"is_certified":false,"is_dttm":false,"python_date_format":null,"type":"FLOAT64","type_generic":0,"verbose_name":null,"warning_markdown":null},"datasourceWarning":false,"expressionType":"SIMPLE","hasCustomLabel":false,"label":"AVG(value)","optionName":"metric_gsfnkhkkkku_bnqwtagyg4g","sqlExpression":null}],"groupby":["location_name"],"adhoc_filters":[{"clause":"WHERE","comparator":"No
+  filter","datasourceWarning":false,"expressionType":"SIMPLE","filterOptionName":"filter_7d6k4h4hqaw_8p4s5apb99y","isExtra":false,"isNew":false,"operator":"TEMPORAL_RANGE","sqlExpression":null,"subject":"time_stamp"},{"clause":"WHERE","comparator":"pm25","datasourceWarning":false,"expressionType":"SIMPLE","filterOptionName":"filter_p1wr7e68mzj_t2ru8ozvxb","isExtra":false,"isNew":false,"operator":"==","operatorId":"EQUALS","sqlExpression":null,"subject":"quantity"},{"clause":"WHERE","comparator":"Spatial
+  average","datasourceWarning":false,"expressionType":"SIMPLE","filterOptionName":"filter_fp8132uo7cc_a1602sc5nqo","isExtra":false,"isNew":false,"operator":"==","operatorId":"EQUALS","sqlExpression":null,"subject":"location_name"}],"order_desc":true,"row_limit":10000,"truncate_metric":true,"show_empty_columns":true,"comparison_type":"values","annotation_layers":[{"annotationType":"FORMULA","color":"#e04355","descriptionColumns":[],"hideLine":false,"intervalEndColumn":"","name":"PM2.5
+  daily limit","opacity":"","overrides":{},"show":true,"showLabel":false,"showMarkers":false,"sourceType":"","style":"dashed","timeColumn":"","titleColumn":"","value":"15","width":1}],"forecastPeriods":10,"forecastInterval":0.8,"x_axis_title":"Date","x_axis_title_margin":30,"y_axis_title":"PM2.5","y_axis_title_margin":30,"y_axis_title_position":"Left","sort_series_type":"sum","color_scheme":"supersetColors","time_shift_color":true,"seriesType":"line","only_total":true,"opacity":0.2,"markerSize":6,"show_legend":true,"legendType":"scroll","legendOrientation":"top","x_axis_time_format":"smart_date","rich_tooltip":true,"showTooltipTotal":true,"tooltipTimeFormat":"smart_date","y_axis_format":"SMART_NUMBER","truncateXAxis":true,"y_axis_bounds":[null,null],"extra_form_data":{},"dashboards":[10],"force":false,"result_format":"json","result_type":"full"},"result_format":"json","result_type":"full"}'
+cache_timeout: null
+uuid: 55852e7e-8665-4114-a550-35effdb1126e
+version: 1.0.0
+dataset_uuid: 0fde1cb5-6eb6-406e-92a9-c865a2271e6e
