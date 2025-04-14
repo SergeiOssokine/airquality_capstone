@@ -10,7 +10,7 @@ from src.upload_data_to_gcs import create_table_in_dwh, upload_many_files
 from src.utils import fetch_logger
 
 
-@task
+@task(description="Download the geographical location data")
 def get_places_data(staging_area: str):
     logger = fetch_logger()
     logger.info("Downloading location data")
@@ -18,7 +18,7 @@ def get_places_data(staging_area: str):
     return location_files
 
 
-@task
+@task(description="Download the sensor information for all sensors")
 def get_sensors_data(staging_area: str):
     logger = fetch_logger()
     logger.info("Downloading all sensor data")
@@ -27,7 +27,7 @@ def get_sensors_data(staging_area: str):
     return sensor_files
 
 
-@task
+@task(description="Upload the geographical location data to the data lake")
 def upload_places_data(filenames: List[str], bucket_name: str):
     logger = fetch_logger()
     logger.info("Uploading places data to GCS")
@@ -36,7 +36,7 @@ def upload_places_data(filenames: List[str], bucket_name: str):
     return f"gs://{bucket_name}/places_data"
 
 
-@task
+@task(description="Upload the sensor information to the data lake")
 def upload_sensors_data(filenames: List[str], bucket_name: str):
     logger = fetch_logger()
     logger.info("Uploading all sensor data to GCS")
@@ -44,7 +44,7 @@ def upload_sensors_data(filenames: List[str], bucket_name: str):
     return f"gs://{bucket_name}/sensors_data"
 
 
-@task
+@task(description="Create a raw table in the data warehouse for the sensor data.")
 def create_sensors_table(
     project_id: str = None, dwh: str = None, sensors_path: str = None
 ):
@@ -57,7 +57,9 @@ def create_sensors_table(
     )
 
 
-@task
+@task(
+    description="Create a raw table in the data warehouse for the geographical location data"
+)
 def create_places_table(project_id=None, dwh=None, places_path: str = None):
     create_table_in_dwh(
         project_id=project_id,
@@ -68,7 +70,9 @@ def create_places_table(project_id=None, dwh=None, places_path: str = None):
     )
 
 
-@flow
+@flow(
+    description="Prepare the sensor and geographical location data in the data warehouse"
+)
 def get_sensors_per_location(
     project_id: str, data_warehouse: str, datalake_bucket: str
 ):

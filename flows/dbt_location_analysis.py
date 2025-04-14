@@ -37,7 +37,9 @@ uris = ['{raw_file_path}']);
     client.query_and_wait(query)
 
 
-@flow(description="Set up all the raw sensor data in BigQuery for further analysis")
+@flow(
+    description="Set up all the raw sensor measurements in BigQuery for further analysis"
+)
 def setup_sensor_data_for_analysis(
     location: str = "Berlin", year: int = 2024, params: ProjectParams = None
 ):

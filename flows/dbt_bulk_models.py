@@ -8,7 +8,7 @@ from prefect_dbt import PrefectDbtRunner
 pth = os.path.dirname(__file__)
 
 
-@flow
+@flow(description="Combine sensor and geographical location data")
 def build_sensors_per_location(flag):
     logger = get_run_logger()
     logger.info(f"I am in {os.getcwd()}")

@@ -4,7 +4,7 @@ from dbt_bulk_models import build_sensors_per_location
 from get_sensors_per_location import get_sensors_per_location
 
 
-@flow
+@flow(description="Combine sensor and geographical location data")
 def sensors_per_location():
     bucket_name = os.getenv("DATALAKE_BUCKET")
     project_id = os.getenv("PROJECT_ID")
