@@ -20,7 +20,7 @@ We use the following tech stack:
 
 The overall architecture of the project is shown below:
 
-![](./images/architecture.svg)
+![](./docs/user_guide/images/architecture.svg)
 
 
 
